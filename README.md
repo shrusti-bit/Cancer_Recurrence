@@ -192,12 +192,6 @@ Cancer_Recurrence_Project/
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 📞 Contact
-
-For questions or support, please contact:
-- **Email**: [your-email@domain.com]
-- **LinkedIn**: [Your LinkedIn Profile]
-- **GitHub**: [Your GitHub Profile]
 
 ## 🙏 Acknowledgments
 
@@ -209,4 +203,5 @@ For questions or support, please contact:
 ---
 
 **⚠️ Medical Disclaimer**: This tool is for research and educational purposes only. It should not be used as the sole basis for clinical decision-making. Always consult with qualified healthcare professionals for medical advice and treatment decisions.
+
 
