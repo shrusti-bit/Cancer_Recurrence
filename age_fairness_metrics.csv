@@ -1,0 +1,4 @@
+Age Group,accuracy,precision,recall
+Middle-Aged,1.0,1.0,1.0
+Senior,1.0,1.0,1.0
+Young,0.9545454545454546,1.0,0.7777777777777778

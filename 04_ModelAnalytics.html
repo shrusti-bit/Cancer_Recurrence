@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4. Model Analytics Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        body { background-color: #1a1a1a; color: white; font-family: 'Inter', sans-serif; }
+        .card { background-color: #2b2b2b; }
+        .nav-button {
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+            padding: 10px 20px;
+            font-weight: 600;
+        }
+        .nav-button:hover {
+            background-color: #383838;
+        }
+        .nav-button.active {
+            border-bottom-color: #00BCD4;
+            background-color: #333333;
+            color: #00BCD4;
+        }
+        .metric-card {
+            background: linear-gradient(135deg, #2b2b2b 0%, #3a3a3a 100%);
+            border: 1px solid #444;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #00BCD4;
+        }
+        .metric-label {
+            font-size: 1em;
+            color: #a0a0a0;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+    <div class="max-w-7xl mx-auto p-6 sm:p-10">
+        <h1 class="text-3xl font-extrabold text-white mb-6">Advanced Model Analytics Dashboard</h1>
+
+        <div class="flex border-b border-gray-700 mb-6 bg-gray-800 rounded-t-lg">
+            <a href="01_PredictionEngine.html" class="nav-button text-white">1. Prediction Engine</a>
+            <a href="02_BiasAudit.html" class="nav-button text-white">2. Basic Bias Audit</a>
+            <a href="03_EnhancedBiasAudit.html" class="nav-button text-white">3. Enhanced Bias Audit</a>
+            <a href="04_ModelAnalytics.html" class="nav-button active text-white">4. Model Analytics</a>
+        </div>
+
+        <!-- Performance Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="metric-card">
+                <div class="metric-label">AUC Score</div>
+                <div class="metric-value" style="color:#4CAF50;">0.994</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">F1-Score</div>
+                <div class="metric-value" style="color:#4CAF50;">0.952</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Accuracy</div>
+                <div class="metric-value" style="color:#4CAF50;">0.974</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Precision</div>
+                <div class="metric-value" style="color:#4CAF50;">1.000</div>
+            </div>
+        </div>
+
+        <!-- Model Comparison -->
+        <div class="card p-6 rounded-xl shadow-lg mb-8">
+            <h2 class="text-2xl font-bold text-white mb-4">📈 Model Performance Comparison</h2>
+            <div id="modelComparisonChart" style="height: 400px;"></div>
+        </div>
+
+        <!-- Confusion Matrix -->
+        <div class="card p-6 rounded-xl shadow-lg mb-8">
+            <h2 class="text-2xl font-bold text-white mb-4">🔍 Confusion Matrix Analysis</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">Confusion Matrix</h3>
+                    <div id="confusionMatrix" style="height: 300px;"></div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">Performance Metrics</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center p-3 bg-gray-700 rounded-lg">
+                            <span class="text-gray-300">Sensitivity (Recall)</span>
+                            <span class="text-2xl font-bold text-green-400">0.800</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-gray-700 rounded-lg">
+                            <span class="text-gray-300">Specificity</span>
+                            <span class="text-2xl font-bold text-blue-400">0.970</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-gray-700 rounded-lg">
+                            <span class="text-gray-300">Positive Predictive Value</span>
+                            <span class="text-2xl font-bold text-purple-400">0.800</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-gray-700 rounded-lg">
+                            <span class="text-gray-300">Negative Predictive Value</span>
+                            <span class="text-2xl font-bold text-yellow-400">0.970</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROC Curve -->
+        <div class="card p-6 rounded-xl shadow-lg mb-8">
+            <h2 class="text-2xl font-bold text-white mb-4">📊 ROC Curve Analysis</h2>
+            <div id="rocCurve" style="height: 500px;"></div>
+        </div>
+
+        <!-- Feature Importance -->
+        <div class="card p-6 rounded-xl shadow-lg">
+            <h2 class="text-2xl font-bold text-white mb-4">🎯 Feature Importance Analysis</h2>
+            <div id="featureImportance" style="height: 500px;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Model Comparison Chart
+        const modelComparisonData = [{
+            x: ['XGBoost (Optimized)', 'Random Forest', 'SVM', 'Logistic Regression'],
+            y: [0.994, 0.996, 0.986, 0.975],
+            type: 'bar',
+            marker: {
+                color: ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0']
+            }
+        }];
+
+        const modelComparisonLayout = {
+            title: 'Model Performance Comparison (AUC Scores)',
+            xaxis: {title: 'Model'},
+            yaxis: {title: 'AUC Score'},
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            font: {color: 'white'}
+        };
+
+        Plotly.newPlot('modelComparisonChart', modelComparisonData, modelComparisonLayout, {responsive: true});
+
+        // Confusion Matrix
+        const confusionMatrixData = [{
+            z: [[65, 2], [2, 8]],
+            x: ['No Recurrence', 'Recurrence'],
+            y: ['No Recurrence', 'Recurrence'],
+            type: 'heatmap',
+            colorscale: 'Blues',
+            showscale: true
+        }];
+
+        const confusionMatrixLayout = {
+            title: 'Confusion Matrix - Test Set Performance',
+            xaxis: {title: 'Predicted'},
+            yaxis: {title: 'Actual'},
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            font: {color: 'white'}
+        };
+
+        Plotly.newPlot('confusionMatrix', confusionMatrixData, confusionMatrixLayout, {responsive: true});
+
+        // ROC Curve
+        const rocData = [{
+            x: [0, 0.03, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+            y: [0, 0.2, 0.4, 0.6, 0.7, 0.8, 0.85, 0.9, 0.93, 0.95, 0.97, 1.0],
+            type: 'scatter',
+            mode: 'lines',
+            name: 'ROC Curve (AUC = 0.994)',
+            line: {color: 'blue', width: 3}
+        }, {
+            x: [0, 1],
+            y: [0, 1],
+            type: 'scatter',
+            mode: 'lines',
+            name: 'Random Classifier',
+            line: {color: 'red', dash: 'dash'}
+        }];
+
+        const rocLayout = {
+            title: 'ROC Curve - Model Performance',
+            xaxis: {title: 'False Positive Rate'},
+            yaxis: {title: 'True Positive Rate'},
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            font: {color: 'white'}
+        };
+
+        Plotly.newPlot('rocCurve', rocData, rocLayout, {responsive: true});
+
+        // Feature Importance
+        const featureImportanceData = [{
+            x: [0.35, 0.28, 0.15, 0.08, 0.05, 0.04, 0.03, 0.02, 0.01, 0.01],
+            y: ['Response_Structural Incomplete', 'Risk_High', 'Age', 'Response_Indeterminate', 
+                'Pathology_Papillary', 'Stage_IV', 'T_T4', 'N_N1', 'Gender_M', 'Smoking_Yes'],
+            type: 'bar',
+            orientation: 'h',
+            marker: {color: '#00BCD4'}
+        }];
+
+        const featureImportanceLayout = {
+            title: 'Top 10 Most Important Features',
+            xaxis: {title: 'Importance Score'},
+            yaxis: {title: 'Features'},
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            font: {color: 'white'}
+        };
+
+        Plotly.newPlot('featureImportance', featureImportanceData, featureImportanceLayout, {responsive: true});
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3. Enhanced Bias Audit Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        body { background-color: #1a1a1a; color: white; font-family: 'Inter', sans-serif; }
+        .card { background-color: #2b2b2b; }
+        .nav-button {
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+            padding: 10px 20px;
+            font-weight: 600;
+        }
+        .nav-button:hover {
+            background-color: #383838;
+        }
+        .nav-button.active {
+            border-bottom-color: #00BCD4;
+            background-color: #333333;
+            color: #00BCD4;
+        }
+        .metric-card {
+            background: linear-gradient(135deg, #2b2b2b 0%, #3a3a3a 100%);
+            border: 1px solid #444;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #00BCD4;
+        }
+        .metric-label {
+            font-size: 1em;
+            color: #a0a0a0;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+    <div class="max-w-7xl mx-auto p-6 sm:p-10">
+        <h1 class="text-3xl font-extrabold text-white mb-6">Advanced AI Bias Audit Dashboard</h1>
+
+        <div class="flex border-b border-gray-700 mb-6 bg-gray-800 rounded-t-lg">
+            <a href="01_PredictionEngine.html" class="nav-button text-white">1. Prediction Engine</a>
+            <a href="02_BiasAudit.html" class="nav-button text-white">2. Basic Bias Audit</a>
+            <a href="03_EnhancedBiasAudit.html" class="nav-button active text-white">3. Enhanced Bias Audit</a>
+            <a href="04_ModelAnalytics.html" class="nav-button text-white">4. Model Analytics</a>
+        </div>
+
+        <!-- Key Metrics Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="metric-card">
+                <div class="metric-label">Overall Fairness Score</div>
+                <div class="metric-value" style="color:#4CAF50;">87.5%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Gender Bias Risk</div>
+                <div class="metric-value" style="color:#FFC107;">Low</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Age Bias Risk</div>
+                <div class="metric-value" style="color:#f44336;">High</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Action Required</div>
+                <div class="metric-value" style="color:#f44336;">Yes</div>
+            </div>
+        </div>
+
+        <!-- Gender Analysis Section -->
+        <div class="card p-6 rounded-xl shadow-lg mb-8">
+            <h2 class="text-2xl font-bold text-white mb-4">👥 Gender-Based Performance Analysis</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">Performance Metrics by Gender</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-gray-400">
+                            <thead class="text-xs text-gray-400 uppercase bg-gray-700">
+                                <tr>
+                                    <th class="px-4 py-3">Gender</th>
+                                    <th class="px-4 py-3">Accuracy</th>
+                                    <th class="px-4 py-3">Precision</th>
+                                    <th class="px-4 py-3">Recall</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-gray-800 border-b border-gray-700">
+                                    <td class="px-4 py-3">Female</td>
+                                    <td class="px-4 py-3">98.3%</td>
+                                    <td class="px-4 py-3">100%</td>
+                                    <td class="px-4 py-3">92.3%</td>
+                                </tr>
+                                <tr class="bg-gray-800 border-b border-gray-700">
+                                    <td class="px-4 py-3">Male</td>
+                                    <td class="px-4 py-3">94.1%</td>
+                                    <td class="px-4 py-3">100%</td>
+                                    <td class="px-4 py-3">88.9%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">Gender Performance Visualization</h3>
+                    <div id="genderChart" style="height: 300px;"></div>
+                </div>
+            </div>
+
+            <div class="mt-4 p-4 bg-blue-900/20 border border-blue-500 rounded-lg">
+                <h4 class="font-semibold text-blue-300 mb-2">🔍 Gender Analysis Insights</h4>
+                <ul class="text-sm text-gray-300 space-y-1">
+                    <li>• <strong>Accuracy Gap:</strong> Female patients show 98.3% accuracy vs 94.1% for males (4.2% difference)</li>
+                    <li>• <strong>Recall Gap:</strong> Female patients have 92.3% recall vs 88.9% for males (3.4% difference)</li>
+                    <li>• <strong>Precision:</strong> Both groups achieve perfect precision (100%)</li>
+                    <li>• <strong>Recommendation:</strong> Monitor for potential gender bias in future model updates</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Age Analysis Section -->
+        <div class="card p-6 rounded-xl shadow-lg mb-8">
+            <h2 class="text-2xl font-bold text-white mb-4">👴 Age-Based Performance Analysis</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">Performance Metrics by Age Group</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-gray-400">
+                            <thead class="text-xs text-gray-400 uppercase bg-gray-700">
+                                <tr>
+                                    <th class="px-4 py-3">Age Group</th>
+                                    <th class="px-4 py-3">Accuracy</th>
+                                    <th class="px-4 py-3">Precision</th>
+                                    <th class="px-4 py-3">Recall</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-gray-800 border-b border-gray-700">
+                                    <td class="px-4 py-3">Young (≤40)</td>
+                                    <td class="px-4 py-3">95.5%</td>
+                                    <td class="px-4 py-3">100%</td>
+                                    <td class="px-4 py-3">77.8%</td>
+                                </tr>
+                                <tr class="bg-gray-800 border-b border-gray-700">
+                                    <td class="px-4 py-3">Middle-Aged (41-60)</td>
+                                    <td class="px-4 py-3">100%</td>
+                                    <td class="px-4 py-3">100%</td>
+                                    <td class="px-4 py-3">100%</td>
+                                </tr>
+                                <tr class="bg-gray-800 border-b border-gray-700">
+                                    <td class="px-4 py-3">Senior (>60)</td>
+                                    <td class="px-4 py-3">100%</td>
+                                    <td class="px-4 py-3">100%</td>
+                                    <td class="px-4 py-3">100%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">Age Group Performance Visualization</h3>
+                    <div id="ageChart" style="height: 300px;"></div>
+                </div>
+            </div>
+
+            <div class="mt-4 p-4 bg-red-900/20 border border-red-500 rounded-lg">
+                <h4 class="font-semibold text-red-300 mb-2">⚠️ Age Analysis Insights</h4>
+                <ul class="text-sm text-gray-300 space-y-1">
+                    <li>• <strong>Significant Gap:</strong> Young patients show 95.5% accuracy vs 100% for middle-aged/senior patients</li>
+                    <li>• <strong>Recall Concern:</strong> Young patients have only 77.8% recall vs 100% for other age groups</li>
+                    <li>• <strong>Critical Finding:</strong> Model may under-diagnose recurrence risk in younger patients</li>
+                    <li>• <strong>Action Required:</strong> Implement bias mitigation strategies and gather more young patient data</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Fairness Summary -->
+        <div class="card p-6 rounded-xl shadow-lg">
+            <h2 class="text-2xl font-bold text-white mb-4">📋 Fairness Assessment Summary</h2>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-400">
+                    <thead class="text-xs text-gray-400 uppercase bg-gray-700">
+                        <tr>
+                            <th class="px-4 py-3">Demographic Group</th>
+                            <th class="px-4 py-3">Accuracy Gap</th>
+                            <th class="px-4 py-3">Recall Gap</th>
+                            <th class="px-4 py-3">Risk Level</th>
+                            <th class="px-4 py-3">Recommendation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-gray-800 border-b border-gray-700">
+                            <td class="px-4 py-3">Gender (F vs M)</td>
+                            <td class="px-4 py-3">4.2%</td>
+                            <td class="px-4 py-3">3.4%</td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-900 text-yellow-300">Low</span></td>
+                            <td class="px-4 py-3">Monitor</td>
+                        </tr>
+                        <tr class="bg-gray-800 border-b border-gray-700">
+                            <td class="px-4 py-3">Age (Young vs Others)</td>
+                            <td class="px-4 py-3">4.5%</td>
+                            <td class="px-4 py-3">22.2%</td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 text-xs font-medium rounded-full bg-red-900 text-red-300">High</span></td>
+                            <td class="px-4 py-3">Immediate Action Required</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gender Performance Chart
+        const genderData = [{
+            x: ['Female', 'Male'],
+            y: [98.3, 94.1],
+            type: 'bar',
+            name: 'Accuracy',
+            marker: {color: '#00BCD4'}
+        }, {
+            x: ['Female', 'Male'],
+            y: [92.3, 88.9],
+            type: 'bar',
+            name: 'Recall',
+            marker: {color: '#4CAF50'}
+        }];
+
+        const genderLayout = {
+            title: 'Performance Metrics by Gender',
+            xaxis: {title: 'Gender'},
+            yaxis: {title: 'Percentage (%)'},
+            barmode: 'group',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            font: {color: 'white'}
+        };
+
+        Plotly.newPlot('genderChart', genderData, genderLayout, {responsive: true});
+
+        // Age Performance Chart
+        const ageData = [{
+            x: ['Young', 'Middle-Aged', 'Senior'],
+            y: [95.5, 100, 100],
+            type: 'bar',
+            name: 'Accuracy',
+            marker: {color: '#00BCD4'}
+        }, {
+            x: ['Young', 'Middle-Aged', 'Senior'],
+            y: [77.8, 100, 100],
+            type: 'bar',
+            name: 'Recall',
+            marker: {color: '#4CAF50'}
+        }];
+
+        const ageLayout = {
+            title: 'Performance Metrics by Age Group',
+            xaxis: {title: 'Age Group'},
+            yaxis: {title: 'Percentage (%)'},
+            barmode: 'group',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            font: {color: 'white'}
+        };
+
+        Plotly.newPlot('ageChart', ageData, ageLayout, {responsive: true});
+    </script>
+</body>
+</html>
+
